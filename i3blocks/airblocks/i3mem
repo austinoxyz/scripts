@@ -1,0 +1,42 @@
+#!/usr/bin/bash
+# blocklets/i3vpn
+key_name="mem"
+
+key_num="$(cat ~/.config/i3blocks/airblocks/block_colors | grep -n $key_name | cut -d':' -f1)"
+left_key_num=$(expr "$key_num" - 1)
+key_color="$(cat ~/.config/i3blocks/airblocks/block_colors | head -n $key_num | tail -n 1 | cut -d':' -f2 | awk '{print $2}')"
+left_key_color="$(cat ~/.config/i3blocks/airblocks/bkg_color)"
+
+if [ "$key_num" != "1" ]; then
+    left_key_color="$(cat ~/.config/i3blocks/airblocks/block_colors | head -n "$left_key_num" | tail -n 1 | cut -d':' -f2 | \awk '{print $2}')"
+fi
+
+#################################
+
+meminfo="$(free -m | cut -c 16-32 | tail -n 2 | head -n 1)"
+used="$(echo "$meminfo" | awk '{print $2}')"
+total="$(echo "$meminfo" | awk '{print $1}')"
+usage="$(python3 -c "from math import ceil;\
+print(ceil((float(\"$used\") / float(\"$total\")) * 100))")"
+
+if [ "$usage" -lt 15 ]; then
+    text_color=\#FFFFFF
+elif [ "$usage" -lt 30 ]; then
+    text_color=\#F7E413
+elif [ "$usage" -lt 70 ]; then
+    text_color=\#F74600
+else
+    text_color=\#F70400
+fi
+
+#################################
+
+# full text
+echo "<span foreground='$key_color' background='$left_key_color' size='x-large'></span>\
+<span background='$key_color'>\
+<span foreground='$text_color' size='small' rise='10'> $usage% </span>\
+</span>"
+
+# short text
+echo "$usage%"; echo
+

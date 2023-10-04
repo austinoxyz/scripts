@@ -1,0 +1,42 @@
+#!/usr/bin/bash
+# blocklets/i3vpn
+key_name="volume"
+
+key_num="$(cat ~/.config/i3blocks/airblocks/block_colors | grep -n $key_name | cut -d':' -f1)"
+left_key_num=$(expr "$key_num" - 1)
+
+key_color="$(cat ~/.config/i3blocks/airblocks/block_colors | head -n $key_num | tail -n 1 | cut -d':' -f2 | awk '{print $2}')"
+left_key_color="$(cat ~/.config/i3blocks/airblocks/bkg_color)"
+if [ "$key_num" != "1" ]; then
+    left_key_color="$(cat ~/.config/i3blocks/airblocks/block_colors | head -n "$left_key_num" | tail -n 1 | cut -d':' -f2 | \awk '{print $2}')"
+fi
+
+#################################
+
+vol_input="$(amixer get Master | tail -n 1)"
+
+vol_level=$(echo "$vol_input" | sed -E 's/^[^[]*\[([^]]*)\].*/\1/')
+vol_level_n=$((${vol_level::-1}))
+vol_active=$(echo "$vol_input" | sed -E "s/.*\[.*?\] \[(.*?)\].*/\1/")
+
+symbol=""
+if [ "$vol_active" = "off" ] || [ "$vol_level_n" -eq 0 ]; then
+    symbol="🔇"
+elif [ "$vol_level_n" -lt 30 ]; then
+    symbol="🔈"
+elif [ "$vol_level_n" -lt 60 ]; then
+    symbol="🔉"
+else
+    symbol="🔊"
+fi
+
+#################################
+
+text_color=\#A4C2F4
+
+echo "<span foreground='$key_color' background='$left_key_color' size='x-large'></span>\
+<span background='$key_color'>\
+<span foreground='$text_color' size='small' rise='10'> $symbol $vol_level </span>\
+</span>"
+
+echo " $symbol $vol_level "

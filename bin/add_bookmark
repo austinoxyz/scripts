@@ -1,0 +1,25 @@
+#!/bin/bash
+BOOKMARKS_DIR=${XDG_DATA_HOME:-$HOME/.local/share}/bookmarks
+
+selected_category=$(select_bookmark_category)
+[ -z ${selected_category} ] && exit 0
+
+bookmarks_file=${BOOKMARKS_DIR}/${selected_category}.txt
+
+url=${1##*://}
+if grep "^$url$" "$bookmarks_file"; then
+    status_msg="Bookmark not added."
+    msg="Bookmark already exists."
+    urgency="critical" # abusing this for the color
+else
+    echo $url >> $bookmarks_file
+    status_msg="Bookmark added."
+    msg="$url" 
+    urgency="normal"
+fi
+
+notify-send "$status_msg" "$msg" \
+    -t 6000 \
+    -u $urgency \
+    -i $HOME/Pictures/icons/bookmark.png
+

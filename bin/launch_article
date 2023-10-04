@@ -1,0 +1,12 @@
+#!/bin/sh
+. ${XDG_CONFIG_HOME:-$HOME/.config}/dmenu
+articles_file=${XDG_DATA_HOME:-$HOME/.local/share}/articles.txt
+selected_article="$(cat ${articles_file} | dmenu -F -c -i \
+    -h 30                                                   \
+    -bw $border_width                                       \
+    -l 15                                                   \
+    -m $monitor                                             \
+    -p "select site:"                                       \
+    -fn $font)"
+[ ! -z $selected_bookmark ] && firefox -url $selected_article
+

@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+date_str="📆 $(date "+%Y %b %d")"
+echo $date_str
+echo $date_str
+echo \#ffffff

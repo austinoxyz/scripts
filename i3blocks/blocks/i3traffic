@@ -1,0 +1,23 @@
+#!/bin/bash
+traffic_log="${XDG_CACHE_HOME:=$HOME/.cache}/traffic_log"
+traffic_prev="$(cat "$traffic_log")"
+
+rx_prev="${traffic_prev%% *}"
+rx_current="$(($(cat /sys/class/net/enp3s0/statistics/rx_bytes | paste -sd"+")))"
+
+tx_prev="${traffic_prev##* }"
+tx_current="$(($(cat /sys/class/net/enp3s0/statistics/tx_bytes | paste -sd"+")))"
+
+echo "$rx_current $tx_current" > "$traffic_log"
+
+rx_display="$((($rx_current-$rx_prev)/1024))"
+if [[ $rx_display -lt 0 ]]; then rx_display=0; fi
+tx_display="$((($tx_current-$tx_prev)/1024))"
+if [[ $tx_display -lt 0 ]]; then tx_display=0; fi
+
+
+output="🔻${rx_display}KiB 🔺${tx_display}KiB"
+echo $output
+echo $output
+echo \#FFFFFF
+

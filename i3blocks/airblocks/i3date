@@ -1,0 +1,24 @@
+#!/usr/bin/bash
+key_name="date"
+
+key_num="$(cat ~/.config/i3blocks/airblocks/block_colors | grep -n $key_name | cut -d':' -f1)"
+left_key_num=$(expr "$key_num" - 1)
+key_color="$(cat ~/.config/i3blocks/airblocks/block_colors | head -n $key_num | tail -n 1 | cut -d':' -f2 | awk '{print $2}')"
+
+left_key_color="$(cat ~/.config/i3blocks/airblocks/bkg_color)"
+if [ "$key_num" != "1" ]; then
+    left_key_color="$(cat ~/.config/i3blocks/airblocks/block_colors | head -n "$left_key_num" | tail -n 1 | cut -d':' -f2 | \awk '{print $2}')"
+fi
+
+#################################
+
+date_str="$(date "+%Y %b %d")"
+
+#################################
+
+text_color=\#FFFFFF
+
+echo "<span foreground='$key_color' background='$left_key_color' size='x-large'></span>\
+<span background='$key_color'>\
+<span foreground='$text_color' size='small' rise='10'> $date_str </span>\
+</span>"

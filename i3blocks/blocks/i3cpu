@@ -1,0 +1,19 @@
+#!/usr/bin/bash
+usage="$(python3 -c "from math import ceil; \
+print(ceil(float(str(\"\
+$(echo "100.0 - $(mpstat | tail -n 1 | awk '{print $13}')" \
+| bc)\"))))")"
+
+if [ "$usage" -lt 15 ]; then
+    text_color=\#FFFFFF
+elif [ "$usage" -lt 30 ]; then
+    text_color=\#F7E413
+elif [ "$usage" -lt 70 ]; then
+    text_color=\#F74600
+else
+    text_color=\#F70400
+fi
+
+echo "$usage%"
+echo "$usage%"
+echo $text_color
