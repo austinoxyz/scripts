@@ -1,8 +1,5 @@
 #!/bin/sh
-
-# load dmenu environment variables
 . ${XDG_CONFIG_HOME:-$HOME/.config}/dmenu
-
 CONFIG_FNAME="${XDG_DATA_HOME:-$HOME/.local/share}/apps/whitelisted.txt"
 
 # run dmenu and get selected_app

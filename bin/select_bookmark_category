@@ -14,7 +14,7 @@ selected_category="$(cat ${bookmark_categories_clean} | dmenu -F -c -i \
     -h 30                  \
     -bw ${border_width}    \
     -l 15                  \
-    -m 1                   \
+    -m $monitor            \
     -p "select category:"  \
     -fn ${font})"
 
