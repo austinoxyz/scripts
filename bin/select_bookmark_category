@@ -1,0 +1,22 @@
+#!/bin/bash
+. ${XDG_CONFIG_HOME:-$HOME/.config}/dmenu
+
+BOOKMARKS_DIR=${XDG_DATA_HOME:-$HOME/.local/share}/bookmarks
+
+bookmark_categories_unclean=${XDG_CACHE_HOME:-$HOME/.cache}/bookmark_categories_unclean
+bookmark_categories_clean=${XDG_CACHE_HOME:-$HOME/.cache}/bookmark_categories_clean
+
+# hacky, but using sed without file io removes the newlines for some reason.
+ls -1 ${BOOKMARKS_DIR} > ${bookmark_categories_unclean}
+sed "s/\..*$//" ${bookmark_categories_unclean} > ${bookmark_categories_clean}
+
+selected_category="$(cat ${bookmark_categories_clean} | dmenu -F -c -i \
+    -h 30                  \
+    -bw ${border_width}    \
+    -l 15                  \
+    -m $monitor            \
+    -p "select category:"  \
+    -fn ${font})"
+
+[ ! -z ${selected_category} ] && echo ${selected_category}
+
