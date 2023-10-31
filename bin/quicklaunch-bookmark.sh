@@ -1,6 +1,7 @@
 #!/bin/bash
-. ${XDG_CONFIG_HOME:-$HOME/.config}/dmenu
-BOOKMARKS_DIR=${XDG_DATA_HOME:-$HOME/.local/share}/bookmarks
+. ${SCRIPTS}/utility/common.sh
+load_dmenu_config
+
 selected_bookmark="$(cat ${BOOKMARKS_DIR}/* | dmenu -F -c -i \
     -h 30                                                   \
     -bw $border_width                                       \

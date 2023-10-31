@@ -1,5 +1,6 @@
 #!/bin/sh
-. ${XDG_CONFIG_HOME:-$HOME/.config}/dmenu
+. ${SCRIPTS}/utility/common.sh
+load_dmenu_config
 
 search_query="$(echo | dmenu -c \
     -h 30                       \

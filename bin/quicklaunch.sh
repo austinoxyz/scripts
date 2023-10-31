@@ -1,9 +1,11 @@
 #!/bin/sh
-. ${XDG_CONFIG_HOME:-$HOME/.config}/dmenu
-CONFIG_FNAME="${XDG_DATA_HOME:-$HOME/.local/share}/apps/whitelisted.txt"
+. ${SCRIPTS}/utility/common.sh
+load_dmenu_config
+
+apps="${XDG_DATA_HOME:-$HOME/.local/share}/apps.txt"
 
 # run dmenu and get selected_app
-selected_app="$(cat $CONFIG_FNAME | \
+selected_app="$(cat $apps | \
     cut -d":" -f 1 |      \
     dmenu -i -n -c        \
         -g 2              \
@@ -15,7 +17,7 @@ selected_app="$(cat $CONFIG_FNAME | \
         -fn $font)"
 
 if [ -n "$selected_app" ]; then
-    _app_config="$(grep "^$selected_app" $CONFIG_FNAME)" 
+    _app_config="$(grep "^$selected_app" $apps)" 
     mode="$(echo $_app_config | cut -d":" -f 2)"
     name="$(echo $_app_config | cut -d":" -f 3)"
     case $mode in 

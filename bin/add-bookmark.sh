@@ -1,12 +1,16 @@
 #!/bin/bash
-BOOKMARKS_DIR=${XDG_DATA_HOME:-$HOME/.local/share}/bookmarks
+. ${SCRIPTS}/utility/common.sh
+load_dmenu_config
 
-selected_category=$(select_bookmark_category)
-[ -z ${selected_category} ] && exit 0
+bookmarks_file=`select_bookmark_file`
 
-bookmarks_file=${BOOKMARKS_DIR}/${selected_category}.txt
+if [ -z "$bookmarks_file" ]; then
+    exit 1; # error notification already handled in `select_bookmark_file`
+fi
 
-url=${1##*://}
+url="`xclip -out clip`"
+url="${url##*://}"
+
 if grep "^$url$" "$bookmarks_file"; then
     status_msg="Bookmark not added."
     msg="Bookmark already exists."
@@ -22,4 +26,3 @@ notify-send "$status_msg" "$msg" \
     -t 6000 \
     -u $urgency \
     -i $HOME/Pictures/icons/bookmark.png
-

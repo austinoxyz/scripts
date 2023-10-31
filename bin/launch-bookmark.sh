@@ -1,33 +1,8 @@
 #!/bin/bash
 . ${SCRIPTS}/utility/common.sh
-
 load_dmenu_config
 
-BOOKMARKS_DIR=${XDG_DATA_HOME:-$HOME/.local/share}/bookmarks
-
-if [ ! -d ${BOOKMARKS_DIR} ]; then
-    fatal_script_error "Bookmarks directory not found."
-fi
-
-categories="$(echo "$(ls -1 ${BOOKMARKS_DIR})" | sed 's/\.[^.]*$//')"
-
-if [ -z "${categories}" ]; then
-    fatal_script_error "No bookmark files found in directory '${BOOKMARKS_DIR}'."
-fi
-
-selected_category="$(echo "${categories}" | dmenu -F -c -i \
-    -h 30                  \
-    -bw ${border_width}    \
-    -l 15                  \
-    -m ${monitor}          \
-    -p "select category:"  \
-    -fn ${font})"
-
-if [ -z ${selected_category} ]; then
-    fatal_script_error "Category selection is empty."
-fi
-
-bookmarks_file=${BOOKMARKS_DIR}/${selected_category}.txt
+bookmarks_file=`select_bookmark_file`
 
 selected_bookmark="$(cat ${bookmarks_file} | dmenu -F -c -i \
     -h 30                                                   \

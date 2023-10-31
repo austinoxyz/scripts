@@ -1,8 +1,9 @@
 #!/bin/sh
-. ${XDG_CONFIG_HOME:-$HOME/.config}/dmenu
+. ${SCRIPTS}/utility/common.sh
+load_dmenu_config
 
-cmd_out=${XDG_DATA_HOME:-$HOME/.local/share}/apps/launch_cmd_stdout
-cmd_err=${XDG_DATA_HOME:-$HOME/.local/share}/apps/launch_cmd_stderr
+cmd_out=${XDG_DATA_HOME:-$HOME/.local/share}/launch_cmd_stdout
+cmd_err=${XDG_DATA_HOME:-$HOME/.local/share}/launch_cmd_stderr
 
 cmd_to_run="$(. ~/.bash_aliases && echo | dmenu -c \
     -h 30                                          \
