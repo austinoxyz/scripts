@@ -1,5 +1,0 @@
-#!/bin/sh
-wallpaper_file="$(ls ${WALLPAPERS_DIR:-$HOME/Pictures/Wallpapers} | shuf -n 1)"
-notify-send $wallpaper_file -t 5000
-wal -i ${WALLPAPERS_DIR:-$HOME/Pictures/Wallpapers}/${wallpaper_file} -o ${WALSCRIPTS_DIR}/genzathurarc --saturate 0.85 -b "#323232"
-
