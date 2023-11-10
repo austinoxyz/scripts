@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-# blocklets/i3vpn
+# blocks/i3vpn
 status="$(echo "$(mullvad status)" | awk '{print $1}')"
 
 if [ "$status" = "Connected" ]; then
