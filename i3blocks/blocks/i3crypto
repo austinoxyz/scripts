@@ -1,0 +1,6 @@
+#!/bin/sh
+btc_price="$(python3 -c "print(round(1/$(curl "https://blockchain.info/tobtc?currency=usd&value=1")))")"
+echo "💲$btc_price"
+echo "💲$btc_price"
+echo \#FFFFFF
+

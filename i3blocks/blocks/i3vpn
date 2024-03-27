@@ -1,0 +1,13 @@
+#!/usr/bin/bash
+# blocks/i3vpn
+status="$(echo "$(mullvad status)" | awk '{print $1}')"
+
+if [ "$status" = "Connected" ]; then
+    text_color=\#25CE00
+else
+    text_color=\#F70400
+fi
+    
+echo "VPN"
+echo "VPN"
+echo $text_color

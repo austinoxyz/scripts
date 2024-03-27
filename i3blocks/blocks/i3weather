@@ -1,0 +1,52 @@
+#!/usr/bin/bash
+
+# we dont want the weather if vpn is connected
+vpn_status="$(echo "$(mullvad status)" | awk '{print $1}')"
+if [ "$vpn_status" = "Connected" ]; then
+    echo "🗙"
+    echo "🗙"
+    echo \#F70400
+    exit 0
+fi
+
+weather_cache=${XDG_DATA_HOME:-$HOME/.local/share}/.weather 
+echo "$(curl -Ss "https://wttr.in?u&0&T&Q")" > $weather_cache 
+
+# weather symbol
+state="$(cat $weather_cache | head -n 1 | cut -c 17-)"
+state=${state,,}
+if [[ "$state" =~ "sunny" ]] || [[ "$state" =~ "clear" ]] || [[ "$state" =~ "partly cloudy" ]]; then
+    weather_symbol="🌤"
+elif [[ "$state" =~ "overcast" ]]; then
+    weather_symbol="☁"
+elif [[ "$state" =~ "rain" ]]; then
+    weather_symbol="🌧"
+elif [[ "$state" =~ "snow" ]]; then
+    weather_symbol="🌨"
+elif [[ "$state" =~ "storm" ]]; then
+    weather_symbol="🌩"
+fi
+
+temperature=$(cat $weather_cache | head -n 2 | tail -n 1 | cut -c 17- | awk '{print $1}')
+
+# if high and low is shown, show average.
+if [[ "$temperature" =~ "(" ]]; then
+    high=$(echo $temperature | awk -F "(" '{print $1}')
+    low=$(echo $temperature | awk -F "(" '{print $2}')
+    low=${low::-1}
+    temperature="$(python3 -c "print(int((int(str(\"$high\"))+int(str(\"$low\")))/2))")"
+else
+    temperature="$(echo $temperature | awk '{print $1}')"
+fi
+
+if [ "$temperature" -lt 50 ]; then
+    text_color=\#2ed5dd
+elif [ "$temperature" -lt 75 ]; then
+    text_color=\#25CE00
+else
+    text_color=\#F70400
+fi
+
+echo "$weather_symbol $temperature°F"
+echo "$temperature°F"
+echo $text_color

@@ -1,0 +1,19 @@
+#!/usr/bin/bash
+
+connected=""
+text_color=""
+
+vpn_status="$(echo "$(mullvad status)" | awk '{print $1}')"
+#if [ "$vpn_status" = "Connected" ] || ping -q -c 1 -W 1 example.org >/dev/null; then
+if [ "$(cat /sys/class/net/enp4s0/operstate)" = "up" ]; then
+    connected="📶"
+    text_color=\#F74600
+else
+    connected="🗙"
+    text_color=\#F70400
+fi
+
+echo $connected
+echo $connected
+echo $text_color
+

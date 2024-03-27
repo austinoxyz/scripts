@@ -1,0 +1,58 @@
+#!/usr/bin/bash
+# TODO find font that supports unicode weather symbols
+# https://www.compart.com/en/unicode/search?q=cloud#characters
+key_name="weather"
+
+key_num="$(cat ~/.config/i3blocks/airblocks/block_colors | grep -n $key_name | cut -d':' -f1)"
+left_key_num=$(expr "$key_num" - 1)
+
+key_color="$(cat ~/.config/i3blocks/airblocks/block_colors | head -n $key_num | tail -n 1 | cut -d':' -f2 | awk '{print $2}')"
+left_key_color="$(cat ~/.config/i3blocks/airblocks/bkg_color)"
+if [ "$key_num" != "1" ]; then
+    left_key_color="$(cat ~/.config/i3blocks/airblocks/block_colors | head -n "$left_key_num" | tail -n 1 | cut -d':' -f2 | \awk '{print $2}')"
+fi
+
+#################################
+
+# we dont want the weather if vpn is connected
+vpn_status="$(echo "$(mullvad status)" | awk '{print $1}')"
+if [ "$vpn_status" = "Connected" ]; then
+    echo "<span foreground='$key_color' background='$left_key_color' size='x-large'></span>\
+<span background='$key_color'>\
+<span foreground='#F70400' size='small' rise='10'> 🗙</span>\
+</span>"
+    exit 0
+fi
+
+echo "$(curl -Ss "https://wttr.in?0&T&Q")" > ~/Scripts/i3blocks/.weather
+weather_symbol="$(python3 ~/.config/i3blocks/airblocks/weather_symbol.py "$(cat ~/.config/i3blocks/airblocks/.weather | head -n 1 | cut -c 17-)")"
+temp=$(cat ~/.config/i3blocks/airblocks/.weather | head -n 2 | tail -n 1 | cut -c 17- | awk '{print $1}')
+
+# if high and low is shown, show average.
+if [[ "$temp" =~ "(" ]]; then
+    high=$(echo $temp | awk -F "(" '{print $1}')
+    low=$(echo $temp | awk -F "(" '{print $2}')
+    low=${low::-1}
+    temp="$(python3 -c "print(int((int(str(\"$high\"))+int(str(\"$low\")))/2))")"
+else
+    temp="$(echo $temp | awk '{print $1}')"
+fi
+
+
+# text color varies based on temperature
+if [ "$temp" -lt 50 ]; then
+    text_color=\#2ed5dd
+elif [ "$temp" -lt 75 ]; then
+    text_color=\#25CE00
+else
+    text_color=\#F70400
+fi
+
+#################################
+
+echo "<span foreground='$key_color' background='$left_key_color' size='x-large'></span>\
+<span background='$key_color'>\
+<span foreground='$text_color' size='small' rise='10'> $weather_symbol $temp°F </span>\
+</span>"
+
+

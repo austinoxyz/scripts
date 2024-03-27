@@ -1,0 +1,40 @@
+#!/bin/bash
+# blocklets/i3cpu
+key_name="temp"
+
+key_num="$(cat ~/.config/i3blocks/airblocks/block_colors | grep -n $key_name | cut -d':' -f1)"
+left_key_num=$(expr "$key_num" - 1)
+
+key_color="$(cat ~/.config/i3blocks/airblocks/block_colors | head -n $key_num | tail -n 1 | cut -d':' -f2 | awk '{print $2}')"
+left_key_color="$(cat ~/.config/i3blocks/airblocks/bkg_color)"
+if [ "$key_num" != "1" ]; then
+    left_key_color="$(cat ~/.config/i3blocks/airblocks/block_colors | head -n "$left_key_num" | tail -n 1 | cut -d':' -f2 | \awk '{print $2}')"
+fi
+   
+#################################
+
+temp=$(sensors | grep 'Package id 0:\|Tdie' | grep ':[ ]*+[0-9]*.[0-9]*°C' -o | grep '+[0-9]*.[0-9]*°C' -o | cut -c 2-)
+temp=${temp::-2}
+temp="$(python3 -c "from math import ceil;
+print(ceil(float(str(\"$temp\"))))")"
+
+if [ "$temp" -lt 50 ]; then
+    text_color=\#FFFFFF
+elif [ "$temp" -lt 60 ]; then
+    text_color=\#F7E413
+elif [ "$temp" -lt 70 ]; then
+    text_color=\#F74600
+else
+    text_color=\#F70400
+fi
+
+#################################
+
+# full text
+echo "<span foreground='$key_color' background='$left_key_color' size='x-large'></span>\
+<span background='$key_color'>\
+<span foreground='$text_color' size='small' rise='5'> $temp°C </span>\
+</span>"
+
+# short text
+echo $temp

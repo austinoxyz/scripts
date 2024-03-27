@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+temporary="$(df -h | grep '/dev/sda3')"
+usage="$(echo $temporary | awk '{print $5}' | sed 's/.$//')"
+display="$(echo $temporary | awk '{print $3 "/" $2}')"
+
+echo "💾 $display ($usage%)"
+echo "$usage%"
+echo \#FFFFFF

@@ -1,0 +1,20 @@
+#!/usr/bin/bash
+#temp=$(sensors | grep 'Package id 0:\|Tdie' | grep ':[ ]*+[0-9]*.[0-9]*°C' -o | grep '+[0-9]*.[0-9]*°C' -o | cut -c 2-)
+temp="$(sensors | grep 'Tctl' | cut -f10 -d' ')"
+temp=${temp::-2}
+temp=${temp:1}
+temp="$(python3 -c "from math import ceil;print(ceil(float(str(\"$temp\"))))")"
+
+if [ "$temp" -lt 50 ]; then
+    text_color=\#FFFFFF
+elif [ "$temp" -lt 60 ]; then
+    text_color=\#F7E413
+elif [ "$temp" -lt 70 ]; then
+    text_color=\#f77700
+else
+    text_color=\#F70400
+fi
+
+echo "$temp°C"
+echo "$temp°C"
+echo $text_color
