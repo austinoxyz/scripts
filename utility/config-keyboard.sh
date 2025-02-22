@@ -6,5 +6,3 @@ xset r rate 200 40 m 0 0
 
 # swap escape and capslock
 setxkbmap -option caps:swapescape
-
-notify-send "hello"
